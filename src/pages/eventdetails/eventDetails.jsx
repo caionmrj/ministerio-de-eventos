@@ -3,262 +3,265 @@ import MobileLayout from "../../assets/layout/MobileLayout";
 import BackButton from "../../assets/components/BackButton";
 import { useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../assets/components/Footer';
-
+import EventDropdown from '../../assets/components/EventDropdown';
 import { db } from '../../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'; // Importa deleteDoc
 
 const EventDetails = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [eventData, setEventData] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [eventData, setEventData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  const [showScheduleForm, setShowScheduleForm] = useState(false);
-  const [scheduleData, setScheduleData] = useState(null);
-  
-  const [newFunctions, setNewFunctions] = useState([{ funcao: '', nome: '' }]);
+    const [showScheduleForm, setShowScheduleForm] = useState(false);
+    const [scheduleData, setScheduleData] = useState(null);
 
-  const handleAddFunction = () => {
-    setNewFunctions([...newFunctions, { funcao: '', nome: '' }]);
-  };
+    const [newFunctions, setNewFunctions] = useState([{ funcao: '', nome: '' }]);
 
-  const handleRemoveFunction = (index) => {
-    const list = [...newFunctions];
-    list.splice(index, 1);
-    setNewFunctions(list);
-  };
+    const handleAddFunction = () => {
+        setNewFunctions([...newFunctions, { funcao: '', nome: '' }]);
+    };
 
-  const handleFunctionChange = (e, index, type) => {
-    const { value } = e.target;
-    const list = [...newFunctions];
-    list[index][type] = value;
-    setNewFunctions(list);
-  };
+    const handleRemoveFunction = (index) => {
+        const list = [...newFunctions];
+        list.splice(index, 1);
+        setNewFunctions(list);
+    };
 
-  const handleCreateSchedule = async () => {
-    if (!id) {
-      alert("ID do evento não encontrado.");
-      return;
-    }
+    const handleFunctionChange = (e, index, type) => {
+        const { value } = e.target;
+        const list = [...newFunctions];
+        list[index][type] = value;
+        setNewFunctions(list);
+    };
 
-    const newSchedule = {
-      eventoId: id,
-      funcoes: newFunctions.filter(func => func.funcao.trim() !== '' || func.nome.trim() !== ''),
-    };
+    const handleCreateSchedule = async () => {
+        if (!id) {
+            alert("ID do evento não encontrado.");
+            return;
+        }
 
-    try {
-      await setDoc(doc(db, "escalas", id), newSchedule);
-      console.log("Escala adicionada/atualizada com sucesso!");
-      alert("Escala salva com sucesso!");
-      setScheduleData(newSchedule);
-      setShowScheduleForm(false);
-    } catch (e) {
-      console.error("Erro ao salvar escala: ", e);
-      alert("Erro ao salvar a escala.");
-    }
-  };
+        const scheduleFunctions = newFunctions.filter(func => func.funcao.trim() !== '' || func.nome.trim() !== '');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!id) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const eventRef = doc(db, "eventos", id);
-        const eventSnap = await getDoc(eventRef);
+        try {
+            const scheduleRef = doc(db, "escalas", id);
+            
+            // Verifica se a escala já existe para decidir entre criar ou atualizar
+            const scheduleSnap = await getDoc(scheduleRef);
+            if (scheduleSnap.exists()) {
+                await updateDoc(scheduleRef, { funcoes: scheduleFunctions });
+            } else {
+                await setDoc(scheduleRef, { eventoId: id, funcoes: scheduleFunctions });
+            }
 
-        if (eventSnap.exists()) {
-          setEventData(eventSnap.data());
-        } else {
-          console.log("Nenhum documento de evento encontrado!");
-        }
+            alert("Escala salva com sucesso!");
+            setScheduleData({ funcoes: scheduleFunctions });
+            setShowScheduleForm(false);
+        } catch (e) {
+            console.error("Erro ao salvar escala: ", e);
+            alert("Erro ao salvar a escala.");
+        }
+    };
 
-        const scheduleRef = doc(db, "escalas", id);
-        const scheduleSnap = await getDoc(scheduleRef);
+    // Função para excluir a escala do Firestore
+    const handleDeleteSchedule = async () => {
+        if (window.confirm("Tem certeza que deseja excluir esta escala? Esta ação é irreversível.")) {
+            try {
+                const scaleRef = doc(db, "escalas", id);
+                await deleteDoc(scaleRef);
+                setScheduleData(null);
+                setNewFunctions([{ funcao: '', nome: '' }]);
+                setShowScheduleForm(false);
+                alert("Escala excluída com sucesso!");
+            } catch (error) {
+                console.error("Erro ao excluir a escala:", error);
+                alert("Erro ao excluir a escala. Tente novamente.");
+            }
+        }
+    };
 
-        if (scheduleSnap.exists()) {
-          setScheduleData(scheduleSnap.data());
-          setNewFunctions(scheduleSnap.data().funcoes || [{ funcao: '', nome: '' }]);
-        } else {
-          console.log("Nenhuma escala encontrada para este evento.");
-        }
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!id) {
+                setLoading(false);
+                return;
+            }
+            try {
+                const eventRef = doc(db, "eventos", id);
+                const eventSnap = await getDoc(eventRef);
 
-      } catch (e) {
-        console.error("Erro ao buscar documentos:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
+                if (eventSnap.exists()) {
+                    setEventData(eventSnap.data());
+                }
 
-    fetchData();
-  }, [id]);
+                const scheduleRef = doc(db, "escalas", id);
+                const scheduleSnap = await getDoc(scheduleRef);
 
-  if (loading) {
-    return (
-      <MobileLayout>
-        <div className="flex justify-center items-center h-screen">
-          <p>Carregando...</p>
-        </div>
-      </MobileLayout>
-    );
-  }
+                if (scheduleSnap.exists()) {
+                    const data = scheduleSnap.data();
+                    setScheduleData(data);
+                    setNewFunctions(data.funcoes || [{ funcao: '', nome: '' }]);
+                }
 
-  if (!eventData) {
-    return (
-      <MobileLayout>
-        <div className="flex justify-center items-center h-screen">
-          <p>Evento não encontrado.</p>
-        </div>
-      </MobileLayout>
-    );
-  }
+            } catch (e) {
+                console.error("Erro ao buscar documentos:", e);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  return (
-    <MobileLayout>
-      <header className="flex items-center justify-between border-b border-[#F2E8E8] pb-2 w-full px-4">
-        <div className="flex-shrink-0">
-          <BackButton />
-        </div>
-        <h1 className="flex-grow text-center text-xl mt-4 mb-4 font-bold text-[#383838]">
-          Detalhes do evento
-        </h1>
-        <div className="w-6"></div>
-      </header>
-      
-      <div>
-        <h1 className="text-left text-base mt-4 mb-4 font-bold px-4 py-1 text-[#383838]">
-          {eventData.nomeEvento}
-        </h1>
-      </div>
+        fetchData();
+    }, [id]);
 
-      <section className="flex border-b border-[#F2E8E8] pb-4">
-        <div className="px-4">
-          <p className="text-left text-sm font-semibold mt-4 mb-0 text-[#383838]">
-            Data:
-          </p>
-          <p className="w-30 text-left text-sm mt-0 text-[#706382]">
-            {eventData.data}
-          </p>
-        </div>
-        <div className="px-4">
-          <p className="text-left text-sm font-semibold mt-4 mb-0 text-[#383838]">
-            Horário:
-          </p>
-          <p className="w-30 text-left text-sm mt-1.5 text-[#706382]">
-            {eventData.horario}
-          </p>
-        </div>
-      </section>
+    if (loading) {
+        return (
+            <MobileLayout>
+                <div className="flex justify-center items-center h-screen">
+                    <p>Carregando...</p>
+                </div>
+            </MobileLayout>
+        );
+    }
 
-      <section className="flex border-b border-[#F2E8E8] pb-4">
-        <div className="px-4">
-          <p className="text-left text-sm font-semibold mt-4 mb-0 text-[#383838]">
-            Local:
-          </p>
-          <p className="w-full text-left text-sm mt-0 text-[#706382]">
-            {eventData.local}
-          </p>
-        </div>
-      </section>
+    if (!eventData) {
+        return (
+            <MobileLayout>
+                <div className="flex justify-center items-center h-screen">
+                    <p>Evento não encontrado.</p>
+                </div>
+            </MobileLayout>
+        );
+    }
 
-      <div>
-        <h1 className="text-left text-lg mt-4 mb-4 font-bold px-4 py-1 text-[#383838]">
-          Descrição
-        </h1>
-        <p className="w-full text-left text-sm mt-0 mb-8 px-4 text-[#706382]">
-          {eventData.descricao}
-        </p>
-      </div>
+    return (
+        <MobileLayout>
+            <header className="flex items-center justify-between border-b border-[#F2E8E8] pb-2 w-full px-4">
+                <div className="flex-shrink-0">
+                    <BackButton />
+                </div>
+                <h1 className="flex-grow text-center text-xl mt-4 mb-4 font-bold text-[#383838]">
+                    Detalhes do evento
+                </h1>
+                <EventDropdown eventId={id} />
+            </header>
+            
+            {/* Seção principal do evento */}
+            <section className="px-4 pt-4">
+                <h1 className="text-left text-2xl font-bold text-[#383838] mb-6">{eventData.nomeEvento}</h1>
+                
+                <div className="space-y-4">
+                    <div>
+                        <h2 className="text-left text-lg font-bold text-[#383838]">Data:</h2>
+                        <p className="text-[#706382]">{eventData.data ? eventData.data.split('-').reverse().join('/') : eventData.data}</p>
+                    </div>
+                    
+                    <div>
+                        <h2 className="text-left text-lg font-bold text-[#383838]">Horário:</h2>
+                        <p className="text-[#706382]">{eventData.horario}</p>
+                    </div>
+                    
+                    <div>
+                        <h2 className="text-left text-lg font-bold text-[#383838]">Local:</h2>
+                        <p className="text-[#706382]">{eventData.local}</p>
+                    </div>
+                    
+                    <div>
+                        <h2 className="text-left text-lg font-bold text-[#383838]">Descrição:</h2>
+                        <p className="text-[#706382]">{eventData.descricao}</p>
+                    </div>
+                </div>
+            </section>
 
-      <section className="mb-20">
-        {scheduleData && (
-          <div className="flex mb-4 mt-4">
-            <h1 className="w-full text-xl text-center px-20 font-bold text-[#383838]">
-              Escala de serviços
-            </h1>
-          </div>
-        )}
-        
-        {scheduleData && !showScheduleForm ? (
-          <div className="px-4">
-            {scheduleData.funcoes.map((item, index) => (
-              <div key={index} className="mb-4">
-                <p className="text-left text-sm font-semibold mb-0 text-[#383838]">
-                  {item.funcao}:
-                </p>
-                <p className="w-30 text-left text-sm mt-0 text-[#706382]">
-                  {item.nome}
-                </p>
-              </div>
-            ))}
-          </div>
-        ) : null}
+            {/* Seção da Escala de Serviços */}
+            <section className="px-4 mt-8 pb-20">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-left text-2xl font-bold text-[#383838]">Escala de Serviços</h2>
+                    <button
+                        onClick={() => setShowScheduleForm(!showScheduleForm)}
+                        className="px-6 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
+                    >
+                        {showScheduleForm ? 'Cancelar' : scheduleData ? 'Editar Escala' : 'Criar Escala'}
+                    </button>
+                </div>
 
-        {showScheduleForm && (
-          <div className="px-4">
-            <h2 className="text-left text-lg mt-4 mb-4 font-bold text-[#383838]">
-              {scheduleData ? 'Editar Escala' : 'Criar Escala'}
-            </h2>
-            {newFunctions.map((item, index) => (
-              <div key={index} className="flex mb-2 space-x-2">
-                <input 
-                  type="text" 
-                  className="flex-1 border-b-1 border-[#F2E8E8] rounded-md px-2 py-1" 
-                  placeholder="Nome da função" 
-                  value={item.funcao} 
-                  onChange={(e) => handleFunctionChange(e, index, 'funcao')} 
-                />
-                <input 
-                  type="text" 
-                  className="flex-1 border-b-1 border-[#F2E8E8] rounded-md px-2 py-1" 
-                  placeholder="Nome da pessoa" 
-                  value={item.nome} 
-                  onChange={(e) => handleFunctionChange(e, index, 'nome')} 
-                />
-                {newFunctions.length > 1 && (
-                  <button onClick={() => handleRemoveFunction(index)} className="text-red-500 font-bold px-2 py-1">
-                    X
-                  </button>
-                )}
-              </div>
-            ))}
-            <div className="justify-center flex py-2">
-              <button
-                onClick={handleAddFunction}
-                className="px-4 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
-              >
-                Adicionar Função
-              </button>
-            </div>
-            <div className="py-2 justify-center flex">
-              <button
-                onClick={handleCreateSchedule}
-                className="px-4 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
-              >
-                Salvar Escala
-              </button>
-            </div>
-          </div>
-        )}
-      </section>
-      
-      <div className="fixed bottom-20 mt-10 px-10 py-4 flex justify-between space-x-30">
-        <button className="flex-1 px-2 border border-[#F2E8E8] text-[#383838] rounded-md">
-          <span>Contato</span>
-        </button>
-        <button
-          onClick={() => setShowScheduleForm(!showScheduleForm)}
-          className="flex flex-col items-center px-4 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
-        >
-          <span>
-            {scheduleData ? 'Editar Escala' : 'Criar Escala'}
-          </span>
-        </button>
-      </div>
-      <Footer />
-    </MobileLayout>
-  );
+                {/* Renderização Condicional da Escala */}
+                {!showScheduleForm && scheduleData && scheduleData.funcoes.length > 0 ? (
+                    <div className="space-y-4">
+                        {scheduleData.funcoes.map((item, index) => (
+                            <div key={index} className="mb-4">
+                                <h3 className="text-left text-lg font-bold text-[#383838]">
+                                    {item.funcao}:
+                                </h3>
+                                <p className="text-[#706382]">
+                                    {item.nome}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ) : !showScheduleForm && (
+                    <p className="text-[#706382] mt-2">Nenhuma escala cadastrada.</p>
+                )}
+                
+                {/* Formulário de Escala */}
+                {showScheduleForm && (
+                    <div className="mt-4">
+                        {newFunctions.map((item, index) => (
+                            <div key={index} className="flex flex-col mb-4">
+                                <input
+                                    type="text"
+                                    className="w-full mb-2 p-3 border border-[#F2E8E8] rounded-md text-[#706382]"
+                                    placeholder="Função"
+                                    value={item.funcao}
+                                    onChange={(e) => handleFunctionChange(e, index, 'funcao')}
+                                />
+                                <div className="flex items-center">
+                                    <input
+                                        type="text"
+                                        className="flex-1 p-3 border border-[#F2E8E8] rounded-md text-[#706382]"
+                                        placeholder="Nome"
+                                        value={item.nome}
+                                        onChange={(e) => handleFunctionChange(e, index, 'nome')}
+                                    />
+                                    {newFunctions.length > 1 && (
+                                        <button 
+                                            onClick={() => handleRemoveFunction(index)} 
+                                            className="ml-2 px-3 py-2 text-[#8967B3] font-bold rounded-md hover:bg-[#F2E8E8]"
+                                        >
+                                            X
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                        <div className="flex flex-col space-y-3 mt-6">
+                            <button
+                                onClick={handleAddFunction}
+                                className="px-6 py-2 bg-[#F2E8E8] text-[#8967B3] font-medium rounded-md"
+                            >
+                                Adicionar Função
+                            </button>
+                            <button
+                                onClick={handleCreateSchedule}
+                                className="px-6 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
+                            >
+                                Salvar Escala
+                            </button>
+                            {scheduleData && (
+                                <button
+                                    onClick={handleDeleteSchedule}
+                                    className="px-6 py-2 bg-red-500 text-white rounded-md"
+                                >
+                                    Excluir Escala
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </section>
+            
+            <Footer />
+        </MobileLayout>
+    );
 };
 
 export default EventDetails;

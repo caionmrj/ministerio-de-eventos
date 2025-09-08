@@ -5,25 +5,64 @@ import { collection, getDocs } from 'firebase/firestore';
 import CalendarioAtivado from "../images/CalendarioAtivado.svg";
 
 const UpcomingEvents = () => {
+  console.log("UpcomingEvents component mounted");
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("useEffect triggered");
     const fetchEvents = async () => {
       try {
         setLoading(true);
         
         // Busca todos os documentos da coleção "eventos"
+        console.log("Buscando eventos...");
         const querySnapshot = await getDocs(collection(db, "eventos"));
-        const allEvents = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Quantidade de eventos encontrados:", querySnapshot.size);
+        const allEvents = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          console.log("Dados do evento:", { id: doc.id, ...data });
+          return { id: doc.id, ...data };
+        });
 
-        // Função auxiliar para converter a string 'DD/MM/YYYY' para um objeto Date
+        // Função auxiliar para converter string de data para objeto Date
         const parseDate = (dateString) => {
           if (!dateString) return null;
-          const [day, month, year] = dateString.split('/').map(Number);
-          // O objeto Date() usa o formato (ano, mês-1, dia)
-          return new Date(year, month - 1, day);
+          
+          console.log("Tentando parsear data:", dateString);
+          
+          // Tenta diferentes formatos de data
+          let parts;
+          
+          // Tenta formato DD/MM/YYYY
+          if (dateString.includes('/')) {
+            parts = dateString.split('/');
+            if (parts.length === 3) {
+              const [day, month, year] = parts.map(Number);
+              console.log("Data parseada:", { day, month, year });
+              return new Date(year, month - 1, day);
+            }
+          }
+          
+          // Tenta formato YYYY-MM-DD
+          if (dateString.includes('-')) {
+            parts = dateString.split('-');
+            if (parts.length === 3) {
+              const [year, month, day] = parts.map(Number);
+              console.log("Data parseada:", { day, month, year });
+              return new Date(year, month - 1, day);
+            }
+          }
+          
+          // Se chegou aqui, tenta criar a data diretamente
+          const date = new Date(dateString);
+          if (!isNaN(date.getTime())) {
+            return date;
+          }
+          
+          console.log("Falha ao parsear data:", dateString);
+          return null;
         };
         
         const today = new Date();
@@ -31,11 +70,17 @@ const UpcomingEvents = () => {
         today.setHours(0, 0, 0, 0); 
 
         // Filtra os eventos que ainda não aconteceram
+        console.log("Data de hoje:", today);
         const filteredEvents = allEvents.filter(event => {
             const eventDate = parseDate(event.data);
+            console.log("Data do evento:", event.nomeEvento, eventDate);
             // Retorna apenas eventos com data válida e que são iguais ou posteriores à data de hoje
-            return eventDate && eventDate >= today;
+            const isValid = eventDate && eventDate >= today;
+            console.log("Evento válido?", event.nomeEvento, isValid);
+            return isValid;
         });
+
+        console.log("Eventos filtrados:", filteredEvents);
 
         // Ordena os eventos por data, do mais próximo para o mais distante
         const sortedEvents = filteredEvents.sort((a, b) => {
@@ -80,7 +125,9 @@ const UpcomingEvents = () => {
               <img className="w-6 h-6" src={CalendarioAtivado} alt="Ícone de evento" />
               <div>
                 <p className="font-bold text-[#383838]">{event.nomeEvento}</p>
-                <p className="text-sm text-[#706382]">{event.data}</p>
+                <p className="text-sm text-[#706382]">
+                  {event.data ? event.data.split('-').reverse().join('/') : ''}
+                </p>
               </div>
             </div>
             <span className="text-sm font-semibold text-[#8967B3]">Ver detalhes</span>
