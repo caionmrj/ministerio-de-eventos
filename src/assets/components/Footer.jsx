@@ -11,7 +11,7 @@ const Footer = () => {
   const currentPath = location.pathname;
 
   return (
- <footer className="fixed bottom-0 w-full max-w-sm p-4 z-10 border-t border-[#F2E8E8]">
+ <footer className="fixed bottom-0 w-full max-w-sm p-4 z-10 border-t mt-4 border-[#F2E8E8]">
  <nav>
   <ul className="flex justify-around items-center">
   {/* Aba Início */}
