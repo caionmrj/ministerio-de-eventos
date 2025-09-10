@@ -175,7 +175,7 @@ const EventDetails = () => {
             {/* Seção da Escala de Serviços */}
             <section className="px-4 mt-8 pb-20">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-left text-2xl font-bold text-[#383838]">Escala de Serviços</h2>
+                    <h2 className="text-left text-2xl font-bold text-[#383838]">Escala do evento</h2>
                     <button
                         onClick={() => setShowScheduleForm(!showScheduleForm)}
                         className="px-6 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md"
