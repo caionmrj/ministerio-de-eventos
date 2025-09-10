@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+
+// Components
 import MobileLayout from "../../assets/layout/MobileLayout";
 import BackButton from "../../assets/components/BackButton";
-import { useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../assets/components/Footer';
 import EventDropdown from '../../assets/components/EventDropdown';
+
+// Firebase
 import { db } from '../../firebase';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'; // Importa deleteDoc
 
 const EventDetails = () => {
+    // Router hooks
     const navigate = useNavigate();
     const { id } = useParams();
-    const [eventData, setEventData] = useState(null);
-    const [loading, setLoading] = useState(true);
 
+    // Event states
+    const [loading, setLoading] = useState(true);
+    const [eventData, setEventData] = useState(null);
+    
+    // Schedule states
     const [showScheduleForm, setShowScheduleForm] = useState(false);
     const [scheduleData, setScheduleData] = useState(null);
-
     const [newFunctions, setNewFunctions] = useState([{ funcao: '', nome: '' }]);
 
     const handleAddFunction = () => {
@@ -133,6 +140,29 @@ const EventDetails = () => {
         );
     }
 
+    // Render helpers
+    const renderEventDetails = () => (
+        <section className="px-4 pt-4">
+            <h1 className="text-left text-2xl font-bold text-[#383838] mb-6">
+                {eventData.nomeEvento}
+            </h1>
+            
+            <div className="space-y-4">
+                {[
+                    { label: 'Data', value: eventData.data ? eventData.data.split('-').reverse().join('/') : eventData.data },
+                    { label: 'Horário', value: eventData.horario },
+                    { label: 'Local', value: eventData.local },
+                    { label: 'Descrição', value: eventData.descricao }
+                ].map(({ label, value }) => (
+                    <div key={label}>
+                        <h2 className="text-left text-lg font-bold text-[#383838]">{label}:</h2>
+                        <p className="text-[#706382]">{value}</p>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+
     return (
         <MobileLayout>
             <header className="flex items-center justify-between border-b border-[#F2E8E8] pb-2 w-full px-4">
@@ -144,33 +174,9 @@ const EventDetails = () => {
                 </h1>
                 <EventDropdown eventId={id} />
             </header>
-            
+
             {/* Seção principal do evento */}
-            <section className="px-4 pt-4">
-                <h1 className="text-left text-2xl font-bold text-[#383838] mb-6">{eventData.nomeEvento}</h1>
-                
-                <div className="space-y-4">
-                    <div>
-                        <h2 className="text-left text-lg font-bold text-[#383838]">Data:</h2>
-                        <p className="text-[#706382]">{eventData.data ? eventData.data.split('-').reverse().join('/') : eventData.data}</p>
-                    </div>
-                    
-                    <div>
-                        <h2 className="text-left text-lg font-bold text-[#383838]">Horário:</h2>
-                        <p className="text-[#706382]">{eventData.horario}</p>
-                    </div>
-                    
-                    <div>
-                        <h2 className="text-left text-lg font-bold text-[#383838]">Local:</h2>
-                        <p className="text-[#706382]">{eventData.local}</p>
-                    </div>
-                    
-                    <div>
-                        <h2 className="text-left text-lg font-bold text-[#383838]">Descrição:</h2>
-                        <p className="text-[#706382]">{eventData.descricao}</p>
-                    </div>
-                </div>
-            </section>
+            {renderEventDetails()}
 
             {/* Seção da Escala de Serviços */}
             <section className="px-4 mt-8 pb-20">

@@ -14,39 +14,38 @@ const WorkSchedule = () => {
           Escala
         </h1>
       </header>
-      <div>
+    <div>
       <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 py-1 text-[#383838]">
          Função:
       </h1>
       <input id="eventName" type="text" className="w-full  border-b-1 border-[#F2E8E8]  rounded-md px-4 py-2 text-[#706382]" placeholder="O que será realizado?" />
-   </div>
-   <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 py-1 text-[#383838]">
+    </div>
+      <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 py-1 text-[#383838]">
          Nome do voluntário:
-   </h1>
-
-    <input id="eventName" type="text" className="w-full  border-b-1 border-[#F2E8E8]  rounded-md px-4 py-2 text-[#706382]" placeholder="Digite o nome do voluntário" />
-    <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 py-1 text-[#383838]">
+      </h1>
+     <input id="eventName" type="text" className="w-full  border-b-1 border-[#F2E8E8]  rounded-md px-4 py-2 text-[#706382]" placeholder="Digite o nome do voluntário" />
+     <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 py-1 text-[#383838]">
          Horário:
-   </h1>
-   <div className="flex px-4 py-2 space-x-10">
+     </h1>
+    <div className="flex px-4 py-2 space-x-10">
       <input id="eventStart" type="text" className="w-40  border-b-1 border-[#F2E8E8]  rounded-md px-1 py-2 text-[#706382]" placeholder="Horário de início" />
       <input id="eventEnd" type="text" className="w-40  border-b-1 border-[#F2E8E8]  rounded-md px-1 py-2 text-[#706382]" placeholder="Horário de término" />
-   </div>
-   <div>
+    </div>
+    <div>
       <h1 className="text-left text-lg mt-4 mb-4 font-bold px-2 pt-50 text-[#383838]">
          o que será realizado:
       </h1>
       <textarea
       className="w-full h-50 border-1 border-[#F2E8E8] rounded-md bg-[#e9e9e9] px-4 py-2 text-[#706382] resize-y"placeholder="Faça uma descrição do evento">
       </textarea>
-      <div className="pt-10 justify-center flex py-2">
+    <div className="pt-10 justify-center flex py-2">
          <button onClick={() => navigate('/eventDetails')} className="flex flex-col items-center px-4 py-2 bg-[#8967B3] text-[#FAFAFA] rounded-md">
            <span className="">
            Criar evento
            </span>
          </button>
-      </div>
-   </div>
+    </div>
+    </div>
     </MobileLayout>
   );
 };

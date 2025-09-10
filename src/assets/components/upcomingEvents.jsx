@@ -61,7 +61,7 @@ const UpcomingEvents = () => {
             return date;
           }
           
-          console.log("Falha ao parsear data:", dateString);
+          console.log("Falha ao inserir data:", dateString);
           return null;
         };
         
@@ -108,7 +108,7 @@ const UpcomingEvents = () => {
   }
 
   if (events.length === 0) {
-    return <p className="text-center text-[#706382]">Nenhum evento futuro encontrado.</p>;
+    return <p className="text-center text-[#706382]">Nenhum evento cadastrado.</p>;
   }
 
   return (

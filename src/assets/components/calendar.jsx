@@ -119,8 +119,7 @@ const Calendar = () => {
                 ${dia.mes !== 'atual' ? 'text-gray-400 cursor-not-allowed' : 'text-[#383838] hover:bg-[#C9B5E8]'}
                 ${isSelected && !isToday && 'text-[#706382] font-bold'}
                 ${isToday && 'bg-[#8967B3] text-[#FAFAFA] font-bold'}
-              `}
-            >
+                `}>
               {dia.numero}
             </button>
           );

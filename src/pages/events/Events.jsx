@@ -36,7 +36,6 @@ const Events = () => {
    </div>
   <Footer />
   </MobileLayout>
-
  );
 }
 export default Events;

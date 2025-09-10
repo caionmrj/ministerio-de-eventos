@@ -7,7 +7,7 @@ const BackButton = () => {
   const BackOnePage = () => {
     navigate(-1);
   };
-
+  
   return (
     <button onClick={BackOnePage}>
         <img className="w-6" src={Voltar} alt="Voltar" />

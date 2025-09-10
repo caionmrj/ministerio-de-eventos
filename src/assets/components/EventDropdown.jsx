@@ -45,35 +45,28 @@ const EventDropdown = ({ eventId }) => { // Note que `setIsEditing` foi removido
 
     return (
         <div className="relative">
-            {/* Botão para abrir/fechar o dropdown */}
-            <button onClick={() => setShowDropdown(!showDropdown)} className="text-[#383838] p-2 rounded-full hover:bg-gray-100">
-                {/* Ícone de três pontos */}
+            <button onClick={() => setShowDropdown(!showDropdown)} className="text-[#383838] p-2 rounded-full hover:bg-[#F2E8E8]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="1" />
                     <circle cx="12" cy="5" r="1" />
                     <circle cx="12" cy="19" r="1" />
                 </svg>
             </button>
-
-            {/* Menu Dropdown */}
             {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-[#FAFAFA] border border-[##F2E8E8] rounded-md shadow-lg z-10">
                     <button 
                         onClick={() => { handleEditEvent(); setShowDropdown(false); }} 
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FAFAFA}">
                         Editar Evento
                     </button>
                     <button 
                         onClick={() => { handleCopyLink(); setShowDropdown(false); }} 
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FAFAFA]">
                         Copiar Link
                     </button>
                     <button 
                         onClick={() => { handleDeleteEvent(); setShowDropdown(false); }} 
-                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
-                    >
+                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-[#FAFAFA]">
                         Excluir Evento
                     </button>
                 </div>
