@@ -45,7 +45,7 @@ const EventDropdown = ({ eventId }) => { // Note que `setIsEditing` foi removido
 
     return (
         <div className="relative">
-            <button onClick={() => setShowDropdown(!showDropdown)} className="text-[#383838] p-2 rounded-full hover:bg-[#F2E8E8]">
+            <button onClick={() => setShowDropdown(!showDropdown)} className="text-[#383838] p-2 rounded-full hover:bg-[#C9B5E8]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="1" />
                     <circle cx="12" cy="5" r="1" />
