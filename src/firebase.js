@@ -5,14 +5,14 @@ import { getFirestore } from "firebase/firestore"; // Importa o Firestore
 
 // Suas credenciais do Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCNtLPrI3K9JaT5mhzUsCeFYgftBqYGnKU",
-  authDomain: "ministerio-de-eventos.firebaseapp.com",
-  databaseURL: "https://ministerio-de-eventos-default-rtdb.firebaseio.com",
-  projectId: "ministerio-de-eventos",
-  storageBucket: "ministerio-de-eventos.firebasestorage.app",
-  messagingSenderId: "337022142873",
-  appId: "1:337022142873:web:fa860a9d69539b386e6b08",
-  measurementId: "G-3LK554C0KW"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_DATABASE_URL,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
 // Inicializa o seu aplicativo Firebase
