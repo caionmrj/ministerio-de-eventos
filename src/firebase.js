@@ -1,9 +1,7 @@
-// Importa as funções que você vai precisar do Firebase
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore"; // Importa o Firestore
+import { getFirestore } from "firebase/firestore";
 
-// Suas credenciais do Firebase
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -15,12 +13,9 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
-// Inicializa o seu aplicativo Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-// Inicializa o banco de dados do Cloud Firestore
 const db = getFirestore(app);
 
-// Exporta o banco de dados para ser usado em outros arquivos
 export { db };

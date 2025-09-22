@@ -1,21 +1,27 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+// src/assets/components/PrivateRoute.jsx
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const PrivateRoute = ({ children }) => {
-    const { user, loading } = useAuth();
+  const { user, loading } = useAuth();
 
-    // Se ainda estiver carregando, não mostra nada
-    if (loading) {
-        return null;
-    }
+  if (loading) {
+    return null;
+  }
 
-    // Se não estiver autenticado, redireciona para a Home
-    if (!user) {
-        return <Navigate to="/" />;
-    }
+  // Se não houver usuário, redireciona para a Home E envia uma mensagem no estado da navegação
+  if (!user) {
+    return (
+      <Navigate
+        to="/"
+        state={{
+          message: "Você precisa fazer login para acessar esta página.",
+        }}
+      />
+    );
+  }
 
-    // Se estiver autenticado, renderiza o conteúdo da rota
-    return children;
+  return children;
 };
 
 export default PrivateRoute;
