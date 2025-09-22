@@ -10,13 +10,10 @@ import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 const CreateEvent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // 1. Use o hook useLocation para acessar o estado da navegação
   const location = useLocation();
 
-  // 2. Tente obter a data pré-selecionada do estado da localização
   const preSelectedDate = location.state?.selectedDate || "";
 
-  // 3. Defina o estado inicial da data com o valor recebido
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState(preSelectedDate);
   const [eventStart, setEventStart] = useState("");
@@ -38,9 +35,7 @@ const CreateEvent = () => {
           setEventEnd(end);
           setEventLocal(data.local);
           setEventDescription(data.descricao);
-        } else {
-          console.log("Nenhum evento encontrado para edição!");
-        }
+        }  
       };
       fetchEvent();
     }
@@ -64,7 +59,6 @@ const CreateEvent = () => {
         alert("Evento atualizado com sucesso!");
         navigate(`/eventdetails/${id}`);
       } else {
-        // Cria o ID baseado no nome do evento e data para evitar duplicados simples
         const newId = `${eventName.replace(/\s+/g, "-")}-${eventDate}`;
         const eventRef = doc(db, "eventos", newId);
         await setDoc(eventRef, newEvent);
@@ -86,12 +80,12 @@ const CreateEvent = () => {
         <h1 className="flex-grow text-center text-xl mt-4 mb-4 font-bold text-[#383838]">
           {id ? "Editar Evento" : "Criar Evento"}
         </h1>
-        <div className="w-6 h-6"></div> {/* Espaçador para alinhar título */}
+        <div className="w-6 h-6"></div>
       </header>
 
       <form onSubmit={handleCreateEvent} className="p-4 space-y-4">
         <label className="block">
-          <span className="text-gray-700">Nome do Evento</span>
+          <span className="text-gray-700">Nome do Evento</span> 
           <input
             type="text"
             value={eventName}
@@ -102,7 +96,6 @@ const CreateEvent = () => {
         </label>
         <label className="block">
           <span className="text-gray-700">Data</span>
-          {/* O valor do input de data já está conectado ao estado `eventDate` */}
           <input
             type="date"
             value={eventDate}

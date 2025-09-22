@@ -19,7 +19,7 @@ const EventDropdown = ({ eventId }) => { // Note que `setIsEditing` foi removido
                 
                 // Tenta deletar a escala, se ela existir
                 const scaleRef = doc(db, "escalas", eventId);
-                await deleteDoc(scaleRef).catch(e => console.log("Escala não encontrada para exclusão."));
+                await deleteDoc(scaleRef).catch(e =>("Escala não encontrada para exclusão."));
 
                 alert("Evento excluído com sucesso!");
                 navigate('/'); // Redireciona para a página inicial

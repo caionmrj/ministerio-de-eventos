@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("Dados do usuário retornados pelo Firebase:", result.user);
       return result.user;
     } catch (error) {
       console.error("Erro ao fazer login com Google:", error);

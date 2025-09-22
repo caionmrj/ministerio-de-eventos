@@ -25,18 +25,14 @@ const AllEvents = () => {
           ...doc.data(),
         }));
 
-        // Log para depuração: veja o que o Firebase está retornando
-        console.log("Eventos recebidos do Firebase:", allEvents);
 
         const groups = allEvents.reduce((acc, event) => {
-          // Pula eventos que não têm uma data válida
           if (!event.data || typeof event.data !== "string") {
             return acc;
           }
 
           const eventDate = new Date(event.data + "T00:00:00");
 
-          // **CORREÇÃO PRINCIPAL**: Verifica se a data é válida antes de continuar
           if (isNaN(eventDate.getTime())) {
             console.warn("Evento com data inválida foi ignorado:", event);
             return acc;

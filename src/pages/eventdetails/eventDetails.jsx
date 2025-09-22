@@ -12,7 +12,6 @@ import EventDropdown from "../../assets/components/EventDropdown";
 import { db } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
 
-// 1. Importe o componente SuggestionBox que criamos
 import SuggestionBox from "../../assets/components/SuggestionBox";
 
 const EventDetails = () => {
@@ -26,7 +25,6 @@ const EventDetails = () => {
   const [scheduleData, setScheduleData] = useState(null);
   const [newFunctions, setNewFunctions] = useState([{ funcao: "", nome: "" }]);
 
-  // ... (O restante das suas funções como handleAddFunction, handleCreateSchedule, etc. continuam aqui)
   const handleAddFunction = () => {
     setNewFunctions([...newFunctions, { funcao: "", nome: "" }]);
   };
@@ -280,16 +278,13 @@ const EventDetails = () => {
           </div>
         )}
       </section>
-      {/* 2. Renderiza a SuggestionBox se o usuário NÃO for admin e os dados do evento existirem */}
       {!isAdmin && eventData && (
         <SuggestionBox
           eventName={eventData.nomeEvento}
           eventDate={eventData.data}
         />
       )}
-      {/* O Footer foi movido para o final para garantir que a SuggestionBox fique acima dele */}
       <div className="pb-20"></div>{" "}
-      {/* Adiciona um espaçamento para o conteúdo não ficar atrás do footer */}
       <Footer />
     </MobileLayout>
   );

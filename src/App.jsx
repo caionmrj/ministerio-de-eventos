@@ -5,7 +5,7 @@ import CreateEvent from "./pages/createevent/CreateEvent";
 import EventDetails from "./pages/eventdetails/eventDetails";
 import WorkSchedule from "./pages/createworkschedule/WorkSchedule";
 import PrivateRoute from "./assets/components/PrivateRoute";
-import AllEvents from "./pages/all-events/AllEvents"; // 1. Importe a nova página
+import AllEvents from "./pages/all-events/AllEvents"; 
 function App() {
   return (
     <>
@@ -19,7 +19,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* 2. Adicione a rota para a página de todos os eventos */}
         <Route
           path="/allevents"
           element={

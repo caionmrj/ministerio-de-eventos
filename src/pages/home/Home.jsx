@@ -34,12 +34,11 @@ const Home = () => {
     }
   };
 
-  // 2. Crie uma função para lidar com o logout
   const handleLogout = async () => {
     try {
       await logout();
       alert("Você saiu com sucesso!");
-      navigate("/"); // Garante que o usuário volte para a página inicial
+      navigate("/");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
       alert("Ocorreu um erro ao tentar sair.");
@@ -48,16 +47,13 @@ const Home = () => {
 
   return (
     <MobileLayout>
-      {/* 3. Lógica condicional no cabeçalho */}
       <header className="bg-[#C9B5E8] flex justify-between items-center p-2">
-        {/* Mostra o nome do usuário se ele estiver logado */}
         {user && (
           <span className="text-purple-900 font-bold ml-2">
             Olá, {user.displayName.split(" ")[0]}!
           </span>
         )}
 
-        {/* Se NÃO houver usuário, mostra o botão de LOGIN */}
         {!user ? (
           <button
             onClick={handleLogin}
@@ -66,7 +62,6 @@ const Home = () => {
             <img src={Login} alt="Login com Google" className="w-14 h-14" />
           </button>
         ) : (
-          /* Se HOUVER usuário, mostra o botão de LOGOUT */
           <button
             onClick={handleLogout}
             className="ml-auto bg-[#8967B3] text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition-colors"

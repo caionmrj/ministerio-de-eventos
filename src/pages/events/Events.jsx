@@ -5,11 +5,11 @@ import Footer from "../../assets/components/Footer";
 import BackButton from "../../assets/components/BackButton";
 import Calendar from "../../assets/components/calendar";
 import UpcomingEvents from "../../assets/components/upcomingEvents";
-import { useAuth } from "../../context/AuthContext"; // <-- 1. Importe o useAuth
+import { useAuth } from "../../context/AuthContext";
 
 const Events = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth(); // <-- 2. Obtenha o status de administrador
+  const { isAdmin } = useAuth();
 
   return (
     <MobileLayout>
@@ -29,7 +29,6 @@ const Events = () => {
         <UpcomingEvents />
       </section>
 
-      {/* 3. Renderiza o botão apenas se o usuário for administrador */}
       {isAdmin && (
         <div className="flex justify-center mt-20 pb-28">
           <button
