@@ -9,8 +9,9 @@ import {
 } from "firebase/auth";
 
 const ADMIN_EMAILS = [
-  "caionmparj@gmail.com", // Substitua pelo e-mail real
-  "ministeriogeracaovideira@gmail.com", // Substitua pelo e-mail real
+  "caionmparj@gmail.com", 
+  "ministeriogeracaovideira@gmail.com",
+  "andreaorapp4@gmail.com",
 ];
 
 export const AuthContext = createContext();
