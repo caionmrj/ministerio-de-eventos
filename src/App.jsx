@@ -3,7 +3,6 @@ import Home from "./pages/home/Home";
 import Events from "./pages/events/Events";
 import CreateEvent from "./pages/createevent/CreateEvent";
 import EventDetails from "./pages/eventdetails/eventDetails";
-import WorkSchedule from "./pages/createworkschedule/WorkSchedule";
 import PrivateRoute from "./assets/components/PrivateRoute";
 import AllEvents from "./pages/all-events/AllEvents"; 
 import { Analytics } from "@vercel/analytics/react"
@@ -50,14 +49,6 @@ function App() {
           element={
             <PrivateRoute>
               <EventDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/workSchedule"
-          element={
-            <PrivateRoute>
-              <WorkSchedule />
             </PrivateRoute>
           }
         />
