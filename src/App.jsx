@@ -6,9 +6,11 @@ import EventDetails from "./pages/eventdetails/eventDetails";
 import WorkSchedule from "./pages/createworkschedule/WorkSchedule";
 import PrivateRoute from "./assets/components/PrivateRoute";
 import AllEvents from "./pages/all-events/AllEvents"; 
+import { Analytics } from "@vercel/analytics/react"
 function App() {
   return (
     <>
+    <Analytics/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
